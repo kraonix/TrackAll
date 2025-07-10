@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_expenses"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Expenses"/>
+    <item android:id="@+id/nav_bills"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Bills"/>
+    <item android:id="@+id/nav_todo"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="To-Do"/>
+    <item android:id="@+id/nav_reminders"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="Reminders"/>
+</menu>

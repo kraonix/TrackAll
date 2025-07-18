@@ -1,44 +1,62 @@
 package com.example.trackall
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.trackall.data.TrackAllDatabase
+import com.example.trackall.databinding.ActivityExpensesBinding
+import com.example.trackall.repository.ExpenseRepository
+import com.example.trackall.ui.expenses.EditExpenseDialogFragment
+import com.example.trackall.ui.expenses.ExpensesAdapter
+import com.example.trackall.util.SessionManager
+import com.example.trackall.viewmodel.ExpenseViewModel
+import com.example.trackall.viewmodel.ExpenseViewModelFactory
 
 class ExpensesActivity : AppCompatActivity() {
 
-    private lateinit var expenseNameEditText: EditText
-    private lateinit var expenseAmountEditText: EditText
-    private lateinit var addExpenseButton: Button
-    private lateinit var expensesRecyclerView: RecyclerView
-
-    private val expensesList = mutableListOf<String>()
+    private lateinit var binding: ActivityExpensesBinding
+    private lateinit var expenseViewModel: ExpenseViewModel
     private lateinit var adapter: ExpensesAdapter
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_expenses)
+        binding = ActivityExpensesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        expenseNameEditText = findViewById(R.id.editExpenseName)
-        expenseAmountEditText = findViewById(R.id.editExpenseAmount)
-        addExpenseButton = findViewById(R.id.btnAddExpense)
-        expensesRecyclerView = findViewById(R.id.recyclerExpenses)
+        sessionManager = SessionManager(this)
+        val currentUser = sessionManager.getLoggedInUsername()
 
-        adapter = ExpensesAdapter(expensesList)
-        expensesRecyclerView.layoutManager = LinearLayoutManager(this)
-        expensesRecyclerView.adapter = adapter
+        if (currentUser == null) {
+            finish()
+            return
+        }
 
-        addExpenseButton.setOnClickListener {
-            val name = expenseNameEditText.text.toString()
-            val amount = expenseAmountEditText.text.toString()
-            if (name.isNotEmpty() && amount.isNotEmpty()) {
-                expensesList.add("$name - ₹$amount")
-                adapter.notifyItemInserted(expensesList.size - 1)
-                expenseNameEditText.text.clear()
-                expenseAmountEditText.text.clear()
+        val db = TrackAllDatabase.getDatabase(this)
+        val repository = ExpenseRepository(db.expenseDao())
+        val factory = ExpenseViewModelFactory(repository)
+        expenseViewModel = ViewModelProvider(this, factory)[ExpenseViewModel::class.java]
+
+        adapter = ExpensesAdapter(
+            onEditClick = { expense ->
+                EditExpenseDialogFragment.newInstance(expense)
+                    .show(supportFragmentManager, "EditExpenseDialog")
+            },
+            onDeleteClick = { expense ->
+                expenseViewModel.deleteExpense(expense)
             }
+        )
+
+        binding.recyclerExpenses.layoutManager = LinearLayoutManager(this)
+        binding.recyclerExpenses.adapter = adapter
+
+        expenseViewModel.getExpenses(currentUser).observe(this) { expenses ->
+            adapter.submitList(expenses)
+        }
+
+        binding.btnAddExpense.setOnClickListener {
+            // AddExpenseDialogFragment or expense form
         }
     }
 }

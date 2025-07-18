@@ -3,6 +3,7 @@ package com.example.trackall
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 
 import com.example.trackall.ui.expenses.ExpensesFragment
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         var sessionManager = SessionManager(this)
 
@@ -27,6 +29,15 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            val window = window
+            val params = window.attributes
+            params.layoutInDisplayCutoutMode =
+                android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes = params
+        }
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="wrap_content"
+    android:layout_height="56dp"
+    android:layout_margin="4dp"
+    android:minWidth="48dp"
+    app:layout_flexGrow="1"
+    app:layout_flexShrink="1"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/date_unselected">
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="36dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="1"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+
+
+</com.google.android.material.card.MaterialCardView>

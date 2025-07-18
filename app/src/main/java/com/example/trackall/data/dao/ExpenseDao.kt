@@ -15,4 +15,8 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM expenses WHERE username = :username ORDER BY date DESC")
     fun getAllExpenses(username: String): LiveData<List<Expense>>
+
+    @Update
+    suspend fun updateExpense(expense: Expense)
+
 }

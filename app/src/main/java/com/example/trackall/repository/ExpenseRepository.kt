@@ -20,4 +20,9 @@ class ExpenseRepository(private val expenseDao: ExpenseDao) {
     suspend fun delete(expense: Expense) {
         expenseDao.deleteExpense(expense)
     }
+
+    suspend fun update(expense: Expense) {
+        expenseDao.updateExpense(expense)
+    }
+
 }

@@ -23,6 +23,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.ColorDrawable
+import androidx.core.content.ContextCompat
+import android.graphics.drawable.GradientDrawable
+import android.util.TypedValue
+import android.app.AlertDialog
+import android.graphics.drawable.Drawable
 
 class ExpensesFragment : Fragment() {
 
@@ -71,12 +80,20 @@ class ExpensesFragment : Fragment() {
                 EditExpenseDialogFragment.newInstance(expense)
                     .show(parentFragmentManager, "EditExpenseDialog")
             },
-            onDeleteClick = { expense -> expenseViewModel.deleteExpense(expense) }
+            onDeleteClick = { /* No-op, handled by swipe */ }
         )
         expensesRecyclerView.adapter = expensesAdapter
 
         // Swipe to Delete
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        // Swipe to Delete
+        val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_custom)
+        val iconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32f, resources.displayMetrics).toInt()
+        val background = GradientDrawable()
+        background.setColor(Color.parseColor("#EF9A9A")) // Light Red color
+        background.cornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12f, resources.displayMetrics)
+        val clearPaint = Paint().apply { xfermode = android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR) }
+
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return false
             }
@@ -84,13 +101,70 @@ class ExpensesFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val expense = expensesAdapter.getExpenseAt(position)
-                expenseViewModel.deleteExpense(expense)
+                
+                // Show Confirmation Dialog
+                val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_delete_confirmation, null)
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setView(dialogView)
+                    .setCancelable(false)
+                    .create()
+                
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-                Snackbar.make(view, "Expense deleted", Snackbar.LENGTH_LONG)
-                    .setAction("UNDO") {
-                        expenseViewModel.addExpense(expense)
-                    }
-                    .show()
+                val messageText = dialogView.findViewById<TextView>(R.id.deleteConfirmationMessage)
+                messageText.text = "Delete ${expense.description} (₹${expense.amount})?"
+
+                dialogView.findViewById<View>(R.id.btnCancelDelete).setOnClickListener {
+                    expensesAdapter.notifyItemChanged(position) // Restore item
+                    dialog.dismiss()
+                }
+
+                dialogView.findViewById<View>(R.id.btnConfirmDelete).setOnClickListener {
+                    expenseViewModel.deleteExpense(expense)
+                    dialog.dismiss()
+                    
+                    Snackbar.make(view, "Expense deleted", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO") {
+                            expenseViewModel.addExpense(expense)
+                        }
+                        .show()
+                }
+
+                dialog.show()
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val itemHeight = itemView.bottom - itemView.top
+                val isCanceled = dX == 0f && !isCurrentlyActive
+
+                if (isCanceled) {
+                    c.drawRect(itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat(), clearPaint)
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    return
+                }
+
+                background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                background.draw(c)
+
+                val deleteIconTop = itemView.top + (itemHeight - iconSize) / 2
+                val deleteIconMargin = (itemHeight - iconSize) / 2
+                val deleteIconLeft = itemView.right - deleteIconMargin - iconSize
+                val deleteIconRight = itemView.right - deleteIconMargin
+                val deleteIconBottom = deleteIconTop + iconSize
+
+                deleteIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+                deleteIcon?.draw(c)
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
         }
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(expensesRecyclerView)

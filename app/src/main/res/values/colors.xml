@@ -24,4 +24,5 @@
     <color name="colorGrey">#5A5E66</color>
     <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorTextSecondary">#B0B3B8</color>
+    <color name="colorHint">#808080</color>
 </resources>

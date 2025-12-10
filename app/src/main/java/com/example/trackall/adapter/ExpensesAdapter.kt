@@ -59,9 +59,7 @@ class ExpensesAdapter(
                 onEditClick(expense)
             }
 
-            binding.btnDelete.setOnClickListener {
-                onDeleteClick(expense)
-            }
+
         }
     }
 }

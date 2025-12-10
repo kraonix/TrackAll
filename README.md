@@ -29,10 +29,8 @@ TrackAll is a modern, dark-themed Android application designed to help users tra
 ## 📸 Screenshots
 
 <!-- Add your screenshots here -->
-<div style="display: flex; flex-direction: row;">
-    <img src="screenshots/home.png" width="200" alt="Home Screen" />
-    <img src="screenshots/add_expense.png" width="200" alt="Add Expense" />
-    <img src="screenshots/edit_expense.png" width="200" alt="Edit Expense" />
+<div style="display: flex; flex-direction: col;">
+    <img width="412" height="860" alt="image" src="https://github.com/user-attachments/assets/35157aab-2331-4ad8-8335-f5002cdff69e" />
 </div>
 
 ## 🚀 Getting Started
@@ -74,4 +72,4 @@ Contributions are welcome! If you have suggestions for improvements or new featu
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-*Built with ❤️ by [Your Name]*
+*Built with ❤️ by [Kraonix]*

@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trackall.data.entity.Expense
 import com.example.trackall.databinding.ItemExpenseBinding
+import com.example.trackall.R
+import android.view.animation.AnimationUtils
 
 class ExpensesAdapter(
     private val onEditClick: (Expense) -> Unit,
@@ -19,6 +21,10 @@ class ExpensesAdapter(
         expenses.clear()
         expenses.addAll(newExpenses)
         notifyDataSetChanged()
+    }
+
+    fun getExpenseAt(position: Int): Expense {
+        return expenses[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
@@ -37,6 +43,17 @@ class ExpensesAdapter(
         fun bind(expense: Expense) {
             binding.amountText.text = "₹${expense.amount}"
             binding.descriptionText.text = expense.description
+
+            val iconRes = when (expense.category) {
+                "Food" -> R.drawable.ic_food
+                "Transport" -> R.drawable.ic_transport
+                "Entertainment" -> R.drawable.ic_entertainment
+                else -> R.drawable.ic_other
+            }
+            binding.categoryIcon.setImageResource(iconRes)
+
+            // Animation
+            binding.root.startAnimation(AnimationUtils.loadAnimation(binding.root.context, android.R.anim.fade_in))
 
             binding.btnEdit.setOnClickListener {
                 onEditClick(expense)

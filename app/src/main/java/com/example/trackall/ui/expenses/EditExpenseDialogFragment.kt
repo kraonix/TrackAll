@@ -2,8 +2,12 @@ package com.example.trackall.ui.expenses
 
 import android.app.Dialog
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,12 +21,14 @@ import com.example.trackall.viewmodel.ExpenseViewModelFactory
 class EditExpenseDialogFragment : DialogFragment() {
 
     private lateinit var expenseViewModel: ExpenseViewModel
+    private var selectedCategory: String = "Other"
 
     companion object {
         private const val ARG_EXPENSE_ID = "expense_id"
         private const val ARG_EXPENSE_AMOUNT = "expense_amount"
         private const val ARG_EXPENSE_DESCRIPTION = "expense_description"
         private const val ARG_EXPENSE_DATE = "expense_date"
+        private const val ARG_EXPENSE_CATEGORY = "expense_category"
         private const val ARG_EXPENSE_USERNAME = "expense_username"
 
         fun newInstance(expense: Expense): EditExpenseDialogFragment {
@@ -32,6 +38,7 @@ class EditExpenseDialogFragment : DialogFragment() {
                 putDouble(ARG_EXPENSE_AMOUNT, expense.amount)
                 putString(ARG_EXPENSE_DESCRIPTION, expense.description)
                 putString(ARG_EXPENSE_DATE, expense.date)
+                putString(ARG_EXPENSE_CATEGORY, expense.category)
                 putString(ARG_EXPENSE_USERNAME, expense.username)
             }
             fragment.arguments = args
@@ -44,7 +51,39 @@ class EditExpenseDialogFragment : DialogFragment() {
 
         val descriptionInput = view.findViewById<EditText>(R.id.editExpenseNameInput)
         val amountInput = view.findViewById<EditText>(R.id.editExpenseAmountInput)
+        
+        val btnFood = view.findViewById<ImageView>(R.id.editBtnCategoryFood)
+        val btnTransport = view.findViewById<ImageView>(R.id.editBtnCategoryTransport)
+        val btnEntertainment = view.findViewById<ImageView>(R.id.editBtnCategoryEntertainment)
+        val btnOther = view.findViewById<ImageView>(R.id.editBtnCategoryOther)
+        
         val updateButton = view.findViewById<Button>(R.id.btnUpdateExpense)
+
+        // Category Selection Logic
+        val categoryViews = mapOf(
+            "Food" to btnFood,
+            "Transport" to btnTransport,
+            "Entertainment" to btnEntertainment,
+            "Other" to btnOther
+        )
+
+        fun updateCategorySelection(category: String) {
+            selectedCategory = category
+            categoryViews.forEach { (cat, view) ->
+                if (cat == category) {
+                    view.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorTeal))
+                    view.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorDarkBg))
+                } else {
+                    view.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorInputBg))
+                    view.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorTextSecondary))
+                }
+            }
+        }
+
+        btnFood.setOnClickListener { updateCategorySelection("Food") }
+        btnTransport.setOnClickListener { updateCategorySelection("Transport") }
+        btnEntertainment.setOnClickListener { updateCategorySelection("Entertainment") }
+        btnOther.setOnClickListener { updateCategorySelection("Other") }
 
         val db = TrackAllDatabase.getDatabase(requireContext())
         val repository = ExpenseRepository(db.expenseDao())
@@ -55,31 +94,43 @@ class EditExpenseDialogFragment : DialogFragment() {
         val oldAmount = requireArguments().getDouble(ARG_EXPENSE_AMOUNT)
         val oldDescription = requireArguments().getString(ARG_EXPENSE_DESCRIPTION)
         val oldDate = requireArguments().getString(ARG_EXPENSE_DATE)
+        val oldCategory = requireArguments().getString(ARG_EXPENSE_CATEGORY)
         val username = requireArguments().getString(ARG_EXPENSE_USERNAME)
 
         descriptionInput.setText(oldDescription)
         amountInput.setText(oldAmount.toString())
+        
+        if (oldCategory != null) {
+            updateCategorySelection(oldCategory)
+        } else {
+            updateCategorySelection("Other")
+        }
 
         updateButton.setOnClickListener {
             val newAmount = amountInput.text.toString().toDoubleOrNull()
             val newDescription = descriptionInput.text.toString().trim()
 
             if (newAmount != null && newDescription.isNotEmpty()) {
+                val newCategory = selectedCategory
                 val updatedExpense = Expense(
                     id = id,
                     username = username ?: "",
                     amount = newAmount,
                     description = newDescription,
-                    date = oldDate ?: ""
+                    date = oldDate ?: "",
+                    category = newCategory
                 )
                 expenseViewModel.updateExpense(updatedExpense)
                 dismiss()
             }
         }
 
-        return AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
-            .setTitle("Edit Expense")
             .create()
+        
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        return dialog
     }
 }

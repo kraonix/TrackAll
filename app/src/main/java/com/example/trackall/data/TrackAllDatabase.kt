@@ -11,7 +11,7 @@ import com.example.trackall.data.entity.User
 
 @Database(
     entities = [Expense::class, User::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class TrackAllDatabase : RoomDatabase() {

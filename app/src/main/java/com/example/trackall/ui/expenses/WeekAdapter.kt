@@ -1,6 +1,5 @@
 package com.example.trackall.ui.expenses
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -23,13 +22,25 @@ class WeekAdapter(
             binding.dateText.text = dayFormat.format(date.time)
 
             val isSelected = isSameDay(date, selectedDate)
+            val isWeekend = date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || 
+                            date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
 
             if (isSelected) {
-                binding.dateText.setTextColor(Color.WHITE)
+                binding.dateText.setTextColor(ContextCompat.getColor(context, R.color.colorTextPrimary))
                 binding.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.date_selected))
+                
+                // Scale Animation
+                binding.root.animate().scaleX(1.1f).scaleY(1.1f).setDuration(200).start()
             } else {
-                binding.dateText.setTextColor(Color.BLACK)
-                binding.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.date_unselected))
+                binding.root.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start()
+                
+                if (isWeekend) {
+                    binding.dateText.setTextColor(ContextCompat.getColor(context, R.color.colorTeal))
+                    binding.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorInputBg))
+                } else {
+                    binding.dateText.setTextColor(ContextCompat.getColor(context, R.color.colorTextPrimary))
+                    binding.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.date_unselected))
+                }
             }
 
             binding.root.setOnClickListener {
@@ -54,18 +65,12 @@ class WeekAdapter(
 
     override fun getItemCount() = dates.size
 
-    /**
-     * Use this when the entire week's data needs to be replaced.
-     */
     fun setWeekData(newDates: List<Calendar>, newSelectedDate: Calendar) {
         dates = newDates
         selectedDate = newSelectedDate
         notifyDataSetChanged()
     }
 
-    /**
-     * Use this when only the selected date highlight needs to be updated.
-     */
     fun updateSelectedDate(newSelectedDate: Calendar) {
         selectedDate = newSelectedDate
         notifyDataSetChanged()

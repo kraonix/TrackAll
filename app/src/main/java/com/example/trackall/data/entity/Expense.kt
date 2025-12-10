@@ -9,5 +9,6 @@ data class Expense(
     val username: String,
     val amount: Double,
     val description: String,
-    val date: String // format: "dd/MM/yyyy"
+    val date: String, // format: "dd/MM/yyyy"
+    val category: String
 )

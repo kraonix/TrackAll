@@ -1,28 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_bg">
 
-    <EditText
-        android:id="@+id/editExpenseNameInput"
-        android:hint="Description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Expense"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
 
-    <EditText
-        android:id="@+id/editExpenseAmountInput"
-        android:hint="Amount"
-        android:inputType="numberDecimal"
-        android:layout_marginTop="8dp"
+    <!-- Amount -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/input_field_bg"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_money"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Amount Icon"/>
+
+        <EditText
+            android:id="@+id/editExpenseAmountInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="Amount (₹)"
+            android:textColorHint="#80FFFFFF"
+            android:textColor="@android:color/white"
+            android:inputType="numberDecimal"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <!-- Description -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/input_field_bg"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_receipt"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Description Icon"/>
+
+        <EditText
+            android:id="@+id/editExpenseNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="What was this for?"
+            android:textColorHint="#80FFFFFF"
+            android:textColor="@android:color/white"
+            android:inputType="textCapSentences"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <!-- Category -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textColor="#80FFFFFF"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/editBtnCategoryFood"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_food"
+                android:background="@drawable/bg_total_box"
+                android:backgroundTint="@color/colorInputBg"
+                android:padding="10dp"
+                app:tint="@color/colorTextSecondary"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/editBtnCategoryTransport"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_transport"
+                android:background="@drawable/bg_total_box"
+                android:backgroundTint="@color/colorInputBg"
+                android:padding="10dp"
+                app:tint="@color/colorTextSecondary"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/editBtnCategoryEntertainment"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_entertainment"
+                android:background="@drawable/bg_total_box"
+                android:backgroundTint="@color/colorInputBg"
+                android:padding="10dp"
+                app:tint="@color/colorTextSecondary"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/editBtnCategoryOther"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_other"
+                android:background="@drawable/bg_total_box"
+                android:backgroundTint="@color/colorInputBg"
+                android:padding="10dp"
+                app:tint="@color/colorTextSecondary"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnUpdateExpense"
-        android:text="Update Expense"
-        android:layout_marginTop="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="UPDATE EXPENSE"
+        android:textColor="@android:color/white"
+        android:background="@drawable/btn_save_bg"
+        android:minHeight="48dp"/>
+
 </LinearLayout>

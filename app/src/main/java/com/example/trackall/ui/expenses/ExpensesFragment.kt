@@ -21,6 +21,8 @@ import com.example.trackall.viewmodel.ExpenseViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.snackbar.Snackbar
 
 class ExpensesFragment : Fragment() {
 
@@ -72,6 +74,26 @@ class ExpensesFragment : Fragment() {
             onDeleteClick = { expense -> expenseViewModel.deleteExpense(expense) }
         )
         expensesRecyclerView.adapter = expensesAdapter
+
+        // Swipe to Delete
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val expense = expensesAdapter.getExpenseAt(position)
+                expenseViewModel.deleteExpense(expense)
+
+                Snackbar.make(view, "Expense deleted", Snackbar.LENGTH_LONG)
+                    .setAction("UNDO") {
+                        expenseViewModel.addExpense(expense)
+                    }
+                    .show()
+            }
+        }
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(expensesRecyclerView)
 
         // ViewModel Setup
         val db = TrackAllDatabase.getDatabase(requireContext())

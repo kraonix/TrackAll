@@ -15,7 +15,13 @@
     <color name="light_gray">#F5F5F5</color>
     <color name="dark_gray">#616161</color>
     <color name="gray_box_bg">#F0F0F0</color>
-    <color name="date_selected">#3F51B5</color> <!-- A dark blue -->
-    <color name="date_unselected">#E0E0E0</color>
+    <color name="date_selected">@color/colorTeal</color>
+    <color name="date_unselected">@color/colorInputBg</color>
     <color name="date_weekend">#FFCDD2</color> <!-- Light red for weekend -->
+    <color name="colorDarkBg">#1E2126</color>
+    <color name="colorInputBg">#2C3036</color>
+    <color name="colorTeal">#00C896</color>
+    <color name="colorGrey">#5A5E66</color>
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextSecondary">#B0B3B8</color>
 </resources>

@@ -19,4 +19,6 @@ interface ExpenseDao {
     @Update
     suspend fun updateExpense(expense: Expense)
 
+    @Query("SELECT * FROM expenses WHERE billId = :billId AND date = :date LIMIT 1")
+    suspend fun getExpenseByBillIdAndDate(billId: Int, date: String): Expense?
 }

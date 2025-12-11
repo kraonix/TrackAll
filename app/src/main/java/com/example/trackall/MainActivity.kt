@@ -12,6 +12,11 @@ import com.example.trackall.ui.bills.BillsFragment
 import com.example.trackall.ui.reminders.RemindersFragment
 import com.example.trackall.ui.todo.ToDoFragment
 import com.example.trackall.util.SessionManager
+import com.example.trackall.data.TrackAllDatabase
+import com.example.trackall.repository.BillRepository
+import com.example.trackall.repository.ExpenseRepository
+import com.example.trackall.viewmodel.BillsViewModel
+import com.example.trackall.viewmodel.BillsViewModelFactory
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +46,17 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Run Bills Scheduler
+        val db = TrackAllDatabase.getDatabase(this)
+        val billRepo = BillRepository(db.billDao())
+        val expenseRepo = ExpenseRepository(db.expenseDao())
+        val factory = BillsViewModelFactory(billRepo, expenseRepo)
+        val billsViewModel = androidx.lifecycle.ViewModelProvider(this, factory)[BillsViewModel::class.java]
+        
+        sessionManager.getLoggedInUsername()?.let { username ->
+            billsViewModel.checkAndGenerateExpenses(username)
+        }
 
         loadFragment(ExpensesFragment())
 

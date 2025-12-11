@@ -10,5 +10,6 @@ data class Expense(
     val amount: Double,
     val description: String,
     val date: String, // format: "dd/MM/yyyy"
-    val category: String
+    val category: String,
+    val billId: Int? = null // Link to Bill ID if generated
 )

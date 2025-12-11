@@ -25,4 +25,8 @@ class ExpenseRepository(private val expenseDao: ExpenseDao) {
         expenseDao.updateExpense(expense)
     }
 
+    suspend fun getExpenseByBillIdAndDate(billId: Int, date: String): Expense? {
+        return expenseDao.getExpenseByBillIdAndDate(billId, date)
+    }
+
 }

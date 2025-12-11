@@ -45,7 +45,7 @@ TrackAll is a modern, dark-themed Android application designed to help users tra
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/TrackAll.git
+    git clone https://github.com/kraonix/TrackAll.git
     ```
 2.  **Open in Android Studio:**
     -   Launch Android Studio.
